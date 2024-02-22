@@ -13,6 +13,11 @@ import os
 from pathlib import Path
 import environ
 
+import django
+# from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
+# django.utils.translation.ugettext = gettext
+
 from .env import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,10 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'graphene_django'
+    'graphene_django',
+    'graphql_auth',
+    'django_filters'
 ]
 
-INSTALLED_EXTENSION = ['employees']
+INSTALLED_EXTENSION = ['employees', 'users']
 
 INSTALLED_APPS += INSTALLED_EXTENSION
 
@@ -57,6 +64,31 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+GRAPHENE = {
+    # ...
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    "graphql_auth.backends.GraphQLAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        #connect GraphQL Auth to GraphQL JWT for authentication
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ObtainJSONWebToken",# get jwt to log in
+    ],
+    "JWT_VERIFY_EXPIRATION": True, # affirm that the jwt token will expire
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ROOT_URLCONF = 'core.urls'
 
@@ -134,3 +166,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
