@@ -72,13 +72,13 @@ class Query(graphene.ObjectType):
     employee = graphene.Field(EmployeeType, id=graphene.Int())
     department = graphene.List(DepartmentType)
 
-    def resolve_employees(self, info):
+    def resolve_employees(self, info: str) -> Employee:
         return Employee.objects.all()
 
-    def resolve_employee(self, info, id):
+    def resolve_employee(self, info: str, id: int) -> Employee:
         return Employee.objects.get(id=id)
 
-    def resolve_department(self, info):
+    def resolve_department(self, info: str) -> Department:
         return Department.objects.all()
 
 
