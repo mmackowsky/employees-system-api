@@ -13,11 +13,6 @@ import os
 from pathlib import Path
 import environ
 
-import django
-# from django.utils.translation import gettext
-from django.utils.translation import gettext_lazy as _
-# django.utils.translation.ugettext = gettext
-
 from .env import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
